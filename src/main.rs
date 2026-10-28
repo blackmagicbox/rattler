@@ -6,10 +6,9 @@ const CELL_SIZE: f32 = 20.0;
 
 #[macroquad::main("Rattler")]
 async fn main() {
-    let x0 = screen_width() / 2.0 + 10.0 * CELL_SIZE;
-    let y0 = 4.0 * CELL_SIZE;
-
     loop {
+        let x0 = screen_width() / 2.0 - 10.0 * CELL_SIZE;
+        let y0 = screen_height()/2.0 - 10.0 * CELL_SIZE;
         clear_background(WHITE);
         for n in 0..COL_WIDTH {
             draw_line(
