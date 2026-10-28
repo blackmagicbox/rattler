@@ -10,7 +10,7 @@ async fn main() {
         let x0 = screen_width() / 2.0 - 10.0 * CELL_SIZE;
         let y0 = screen_height()/2.0 - 10.0 * CELL_SIZE;
         clear_background(WHITE);
-        for n in 0..COL_WIDTH {
+        for n in 0..=COL_WIDTH {
             draw_line(
                 x0 + (CELL_SIZE * n as f32),
                 y0,
@@ -20,15 +20,7 @@ async fn main() {
                 LIGHTGRAY,
             );
         }
-        draw_line(
-            x0 + (CELL_SIZE * 20.0 as f32),
-            y0,
-            x0 + (CELL_SIZE * 20.0 as f32),
-            y0 + (CELL_SIZE * COL_HEIGHT as f32),
-            1.0,
-            LIGHTGRAY,
-        );
-        for n in 0..COL_WIDTH {
+        for n in 0..=COL_WIDTH {
             draw_line(
                 x0,
                 y0 + (CELL_SIZE * n as f32),
@@ -36,16 +28,8 @@ async fn main() {
                 y0 + (CELL_SIZE * n as f32),
                 1.0,
                 LIGHTGRAY,
-            )
+            );
         }
-        draw_line(
-            x0,
-            y0 + (CELL_SIZE * 20.0 as f32),
-            x0 + (CELL_SIZE * COL_WIDTH as f32),
-            y0 + (CELL_SIZE * 20.0 as f32),
-            1.0,
-            LIGHTGRAY,
-        );
         next_frame().await
     }
 }
