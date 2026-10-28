@@ -1,19 +1,52 @@
 use macroquad::prelude::*;
 
-#[macroquad::main("Snake")]
+const COL_WIDTH: u32 = 20;
+const COL_HEIGHT: u32 = 20;
+const CELL_SIZE: f32 = 20.0;
+
+#[macroquad::main("Rattler")]
 async fn main() {
+    let x0 = screen_width() / 2.0 + 10.0 * CELL_SIZE;
+    let y0 = 4.0 * CELL_SIZE;
+
     loop {
         clear_background(WHITE);
-        let mut x = 0.0;
-        while x < screen_width() {
-            draw_line(x, 0.0, x, screen_height(), 3.0, LIGHTGRAY);
-            x += 20.0;
+        for n in 0..COL_WIDTH {
+            draw_line(
+                x0 + (CELL_SIZE * n as f32),
+                y0,
+                x0 + (CELL_SIZE * n as f32),
+                y0 + (CELL_SIZE * COL_HEIGHT as f32),
+                1.0,
+                LIGHTGRAY,
+            );
         }
-        let mut y = 0.0;
-        while y < screen_height() {
-            draw_line(0.0, y, screen_width(), y, 3.0, LIGHTGRAY);
-            y += 20.0;
+        draw_line(
+            x0 + (CELL_SIZE * 20.0 as f32),
+            y0,
+            x0 + (CELL_SIZE * 20.0 as f32),
+            y0 + (CELL_SIZE * COL_HEIGHT as f32),
+            1.0,
+            LIGHTGRAY,
+        );
+        for n in 0..COL_WIDTH {
+            draw_line(
+                x0,
+                y0 + (CELL_SIZE * n as f32),
+                x0 + (CELL_SIZE * COL_WIDTH as f32),
+                y0 + (CELL_SIZE * n as f32),
+                1.0,
+                LIGHTGRAY,
+            )
         }
+        draw_line(
+            x0,
+            y0 + (CELL_SIZE * 20.0 as f32),
+            x0 + (CELL_SIZE * COL_WIDTH as f32),
+            y0 + (CELL_SIZE * 20.0 as f32),
+            1.0,
+            LIGHTGRAY,
+        );
         next_frame().await
     }
 }
