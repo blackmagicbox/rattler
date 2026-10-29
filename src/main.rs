@@ -23,12 +23,13 @@ async fn main() {
         let x0 = (screen_width() - grid_w) / 2.0;
         let y0 = (screen_height() - grid_h) / 2.0;
 
-        clear_background(WHITE);
+        clear_background(DARKBLUE);
 
         for col in 0..=GRID_COLS {
             let x = x0 + cell_size * col as f32;
             draw_line(x, y0, x, y0 + grid_h, 1.0, LIGHTGRAY);
         }
+
         for row in 0..=GRID_ROWS {
             let y = y0 + cell_size * row as f32;
             draw_line(x0, y, x0 + grid_w, y, 1.0, LIGHTGRAY);
