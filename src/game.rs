@@ -19,6 +19,7 @@ impl std::ops::Add for Vector2d {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[expect(dead_code)]
 pub enum Direction {
     Up,
     Down,
@@ -38,6 +39,7 @@ impl Direction {
         }
     }
 
+    #[expect(dead_code)]
     pub fn opposite(self) -> Direction {
         match self {
             Direction::Up => Direction::Down,
