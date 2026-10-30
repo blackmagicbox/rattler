@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 
-mod palette;
 mod game;
+mod palette;
 
 const GRID_COLS: u32 = 20;
 const GRID_ROWS: u32 = 20;
@@ -20,7 +20,13 @@ async fn main() {
     let next = head + direction.delta();
 
     loop {
-        let layout = game::Layout::from_screen(GRID_COLS, GRID_ROWS, MARGIN, screen_width(), screen_height());
+        let layout = game::Layout::from_screen(
+            GRID_COLS,
+            GRID_ROWS,
+            MARGIN,
+            screen_width(),
+            screen_height(),
+        );
         clear_background(palette::BACKGROUND);
         layout.draw_grid(GRID_COLS, GRID_ROWS, palette::GRID_LINE);
         layout.draw_cell(head, palette::SNAKE_HEAD);
