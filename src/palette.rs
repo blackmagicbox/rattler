@@ -1,5 +1,7 @@
+#![allow(dead_code)]
 use macroquad::prelude::Color;
 
+// Palette inspired by the "Retrocal-8-palette" at https://lospec.com/palette-list/retrocal-8
 pub const DESERT_SKY: Color = Color::from_hex(0x6eb8a8);
 pub const SNAKE_SKIN_DARK: Color = Color::from_hex(0x2a584f);
 pub const SNAKE_SKIN: Color = Color::from_hex(0x74a33f);
