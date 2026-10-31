@@ -1,5 +1,5 @@
-use std::collections::VecDeque;
 use macroquad::prelude::draw_line;
+use std::collections::VecDeque;
 
 // --------------------- Movement and Direction Logic ---------------------
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -20,7 +20,6 @@ impl std::ops::Add for Vector2d {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-#[expect(dead_code)]
 pub enum Direction {
     Up,
     Down,
@@ -40,7 +39,6 @@ impl Direction {
         }
     }
 
-    #[expect(dead_code)]
     pub fn opposite(self) -> Direction {
         match self {
             Direction::Up => Direction::Down,
@@ -118,21 +116,23 @@ impl Layout {
 
 //-----------------------------------  Actors --------------------------------
 
+const MAX_PENDING: usize = 2;
+
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct Snake{
+pub struct Snake {
     direction: Direction,
     body: VecDeque<Vector2d>,
+    pending: VecDeque<Direction>,
 }
 
-
 impl Snake {
-    pub fn new(head: Vector2d, length:usize, direction: Direction) -> Snake {
+    pub fn new(head: Vector2d, length: usize, direction: Direction) -> Snake {
         // Assert to test the snake have at least a head.
         assert!(length >= 1, "Snake must have at least the head");
         // Set the direction
-        let behind  = direction.opposite().delta();
+        let behind = direction.opposite().delta();
         // Create a new body `with_capacity' that's why the length is for
-        let mut body:VecDeque<Vector2d> = VecDeque::with_capacity(length);
+        let mut body: VecDeque<Vector2d> = VecDeque::with_capacity(length);
         // Create the head
         let mut cell = head;
         // Populate the body
@@ -144,6 +144,7 @@ impl Snake {
         Snake {
             direction,
             body,
+            pending: VecDeque::with_capacity(MAX_PENDING),
         }
     }
 
@@ -152,6 +153,10 @@ impl Snake {
     }
 
     pub fn step(&mut self, grow: bool) {
+        // Check the list of directions to decide if it should be updated
+        if let Some(next) = self.pending.pop_front() {
+            self.direction = next;
+        }
         // Set the new Head in front of the current head (direction.delta)
         let new_head = self.head() + self.direction.delta();
         // Push the new head to the body
@@ -163,18 +168,21 @@ impl Snake {
         }
     }
 
-    pub fn get_body(&self) -> &VecDeque<Vector2d> {
+    pub fn body(&self) -> &VecDeque<Vector2d> {
         &self.body
     }
 
     pub fn set_direction(&mut self, dir: Direction) {
-        if dir != self.direction.opposite(){
+        let last = self.pending.back().copied().unwrap_or(self.direction);
+        let is_repeat = dir == last;
+        let is_reverse = dir == last.opposite();
+        let is_ful = self.pending.len() == MAX_PENDING;
+        if !is_ful && !is_repeat && !is_reverse {
+            self.pending.push_back(dir);
+        }
+
+        if dir != self.direction.opposite() {
             self.direction = dir;
         }
     }
-
 }
-
-
-
-
