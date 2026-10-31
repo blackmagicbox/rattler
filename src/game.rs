@@ -1,3 +1,4 @@
+use std::collections::VecDeque;
 use macroquad::prelude::draw_line;
 
 // --------------------- Movement and Direction Logic ---------------------
@@ -114,3 +115,66 @@ impl Layout {
         }
     }
 }
+
+//-----------------------------------  Actors --------------------------------
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Snake{
+    direction: Direction,
+    body: VecDeque<Vector2d>,
+}
+
+
+impl Snake {
+    pub fn new(head: Vector2d, length:usize, direction: Direction) -> Snake {
+        // Assert to test the snake have at least a head.
+        assert!(length >= 1, "Snake must have at least the head");
+        // Set the direction
+        let behind  = direction.opposite().delta();
+        // Create a new body `with_capacity' that's why the length is for
+        let mut body:VecDeque<Vector2d> = VecDeque::with_capacity(length);
+        // Create the head
+        let mut cell = head;
+        // Populate the body
+        for _ in 0..length {
+            body.push_back(cell);
+            cell = cell + behind;
+        }
+        // Return the new snake
+        Snake {
+            direction,
+            body,
+        }
+    }
+
+    pub fn head(&self) -> Vector2d {
+        *self.body.front().expect("snake body is never empty")
+    }
+
+    pub fn step(&mut self, grow: bool) {
+        // Set the new Head in front of the current head (direction.delta)
+        let new_head = self.head() + self.direction.delta();
+        // Push the new head to the body
+        self.body.push_front(new_head);
+        // check if the snake should grow (ate a fruit)
+        // If not just pop the back
+        if !grow {
+            self.body.pop_back();
+        }
+    }
+
+    pub fn get_body(&self) -> &VecDeque<Vector2d> {
+        &self.body
+    }
+
+    pub fn set_direction(&mut self, dir: Direction) {
+        if dir != self.direction.opposite(){
+            self.direction = dir;
+        }
+    }
+
+}
+
+
+
+
