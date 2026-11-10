@@ -186,3 +186,15 @@ impl Snake {
         }
     }
 }
+
+//-----------------------------------  Game --------------------------------
+// Game is a struct that defines everything that exists in a ongoing game
+pub struct Game {
+    cols: u32,
+    rows: u32,
+    snake: Snake,
+    // The interval between each snake tests
+    step_interval: f32,
+    // Accumulated time "non spent" on steps
+    acc: f32,
+}
