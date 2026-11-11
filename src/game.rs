@@ -1,4 +1,5 @@
-use macroquad::prelude::draw_line;
+use crate::palette;
+use macroquad::prelude::*;
 use std::collections::VecDeque;
 
 // --------------------- Movement and Direction Logic ---------------------
@@ -58,6 +59,7 @@ pub struct Layout {
 }
 
 impl Layout {
+    // Creates a new layout based on the number of columns and rows, margin, screen width (sw), and screen height (sh).
     pub fn from_screen(cols: u32, rows: u32, margin: f32, sw: f32, sh: f32) -> Layout {
         let cell_w = sw / cols as f32;
         let cell_h = sh / rows as f32;
@@ -176,13 +178,9 @@ impl Snake {
         let last = self.pending.back().copied().unwrap_or(self.direction);
         let is_repeat = dir == last;
         let is_reverse = dir == last.opposite();
-        let is_ful = self.pending.len() == MAX_PENDING;
-        if !is_ful && !is_repeat && !is_reverse {
+        let is_full = self.pending.len() == MAX_PENDING;
+        if !is_full && !is_repeat && !is_reverse {
             self.pending.push_back(dir);
-        }
-
-        if dir != self.direction.opposite() {
-            self.direction = dir;
         }
     }
 }
@@ -197,4 +195,68 @@ pub struct Game {
     step_interval: f32,
     // Accumulated time "non spent" on steps
     acc: f32,
+}
+
+impl Game {
+    // Init a new game with the given dimensions and step interval.
+    pub fn new(cols: u32, rows: u32, step_interval: f32) -> Game {
+        // The Snake starts in the middle of the grid moving to the right
+        let start = Vector2d {
+            x: cols as i32 / 2,
+            y: rows as i32 / 2,
+        };
+        Game {
+            cols,
+            rows,
+            snake: Snake::new(start, 3, Direction::Right),
+            step_interval,
+            acc: 0.0,
+        }
+    }
+
+    // handle_input: handles user input to change the direction of the snake.
+    pub fn handle_input(&mut self) {
+        if is_key_pressed(KeyCode::Up) {
+            self.snake.set_direction(Direction::Up);
+        } else if is_key_pressed(KeyCode::Down) {
+            self.snake.set_direction(Direction::Down);
+        } else if is_key_pressed(KeyCode::Left) {
+            self.snake.set_direction(Direction::Left);
+        } else if is_key_pressed(KeyCode::Right) {
+            self.snake.set_direction(Direction::Right);
+        }
+    }
+    // Move the "steps" forward varying by dt seconds
+    pub fn update(&mut self, dt: f32) {
+        self.acc += dt;
+        while self.acc >= self.step_interval {
+            self.snake.step(false);
+            self.acc -= self.step_interval;
+        }
+    }
+
+    // Draw the game to the screen. This is a placeholder for whatever rendering system you're using.
+    pub fn draw(&self, margin: f32) {
+        // Create the layout for the game based on the current window size and the number of columns/rows.
+        let layout = Layout::from_screen(
+            self.cols,
+            self.rows,
+            margin,
+            screen_width(),
+            screen_height(),
+        );
+
+        // Clear the screen
+        clear_background(palette::BACKGROUND);
+
+        // Draw the grid
+        layout.draw_grid(self.cols, self.rows, palette::GRID_LINE);
+
+        // Draw the snake
+        for cell in self.snake.body(){
+            layout.draw_cell(*cell, palette::SNAKE_BODY);
+        }
+        // Paint the snake head
+        layout.draw_cell(self.snake.head(), palette::SNAKE_HEAD);
+    }
 }
