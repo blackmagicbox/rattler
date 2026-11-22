@@ -188,6 +188,7 @@ impl Snake {
 //-----------------------------------  Game --------------------------------
 // Game is a struct that defines everything that exists in a ongoing game
 pub struct Game {
+    score: i32,
     cols: u32,
     rows: u32,
     snake: Snake,
@@ -207,19 +208,21 @@ impl Game {
             y: rows as i32 / 2,
         };
 
-        let food = Vector2d {
-            x: cols as i32 / 4,
-            y: rows as i32 / 4,
-        };
-
         Game {
+            score: 0,
             cols,
             rows,
             snake: Snake::new(start, 3, Direction::Right),
             step_interval,
             acc: 0.0,
-            food,
+            food: Vector2d {
+                x: cols as i32 / 4,
+                y: rows as i32 / 4,
+            },
         }
+    }
+    pub fn check_collision(&self) -> bool {
+        false
     }
 
     // handle_input: handles user input to change the direction of the snake.
@@ -238,7 +241,7 @@ impl Game {
     pub fn update(&mut self, dt: f32) {
         self.acc += dt;
         while self.acc >= self.step_interval {
-            self.snake.step(false);
+            self.snake.step(self.check_collision());
             self.acc -= self.step_interval;
         }
     }
