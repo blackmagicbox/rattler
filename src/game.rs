@@ -195,6 +195,7 @@ pub struct Game {
     step_interval: f32,
     // Accumulated time "non spent" on steps
     acc: f32,
+    food: Vector2d,
 }
 
 impl Game {
@@ -205,12 +206,19 @@ impl Game {
             x: cols as i32 / 2,
             y: rows as i32 / 2,
         };
+
+        let food = Vector2d {
+            x: cols as i32 / 4,
+            y: rows as i32 / 4,
+        };
+
         Game {
             cols,
             rows,
             snake: Snake::new(start, 3, Direction::Right),
             step_interval,
             acc: 0.0,
+            food,
         }
     }
 
@@ -249,11 +257,14 @@ impl Game {
         // Clear the screen
         clear_background(palette::BACKGROUND);
 
+        // Draw the Food
+        layout.draw_cell(self.food, palette::FOOD);
+
         // Draw the grid
         layout.draw_grid(self.cols, self.rows, palette::GRID_LINE);
 
         // Draw the snake
-        for cell in self.snake.body(){
+        for cell in self.snake.body() {
             layout.draw_cell(*cell, palette::SNAKE_BODY);
         }
         // Paint the snake head

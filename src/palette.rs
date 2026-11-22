@@ -15,3 +15,4 @@ pub const BACKGROUND: Color = DESERT_SAND;
 pub const GRID_LINE: Color = DESERT_SAND_DARK;
 pub const SNAKE_HEAD: Color = SNAKE_SKIN;
 pub const SNAKE_BODY: Color = SNAKE_SKIN_DARK;
+pub const FOOD: Color = CACTUS_FLOWER;
